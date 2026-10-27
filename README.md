@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # AutoFlow_AI
 
 *An autonomous AI task worker.* A prototype AI worker that takes a plain-English task, works out the steps itself, operates real tools
@@ -251,3 +252,6 @@ The Python package is called `worker/`; AutoFlow_AI is the project name.
 - MySQL connection refused: `docker compose up -d mysql`, wait for healthy, check `DB_*` in `.env`.
 - OCR errors: install `tesseract-ocr` and `poppler-utils`.
 - Service logs: `runs/logs/*.log`.
+=======
+﻿# AutoFlow_AI
+>>>>>>> 1427a3ed1a52467472158c63fc205136f9d95b86
