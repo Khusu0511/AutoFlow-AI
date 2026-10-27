@@ -1,0 +1,12 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>{% block title %}FinanceDesk{% endblock %}</title>
+<style>
+ body{font-family:system-ui,sans-serif;max-width:900px;margin:24px auto;padding:0 16px;color:#222}
+ nav a{margin-right:14px} table{border-collapse:collapse;width:100%} td,th{border:1px solid #ccc;padding:6px 10px;text-align:left}
+ label{display:block;margin-top:12px;font-weight:600} input{padding:6px;width:320px} button{margin-top:16px;padding:8px 18px}
+ .error{color:#b00020} .ok{color:#0a6b2d}
+</style></head>
+<body><h1>FinanceDesk</h1>
+<nav><a href="/payables">Payables</a><a href="/new">New payable</a></nav><hr>
+{% block body %}{% endblock %}
+</body></html>

@@ -1,0 +1,6 @@
+{% extends 'base.html' %}{% block body %}<h2>Quotes: {{ vendor.name }}</h2>
+<table><tr><th>Item</th><th>Description</th><th>Unit price (USD)</th><th>Min qty</th><th>Lead time (days)</th></tr>
+{% for q in quotes %}<tr><td>{{ q.item }}</td><td>{{ q.desc }}</td><td>{{ '{:,.2f}'.format(q.unit_price) }}</td>
+<td>{{ q.min_qty }}</td><td>{{ q.lead_days }}</td></tr>
+{% else %}<tr><td colspan="5">No quotes.</td></tr>{% endfor %}</table>
+<p><a href="/vendors">Back to vendors</a></p>{% endblock %}

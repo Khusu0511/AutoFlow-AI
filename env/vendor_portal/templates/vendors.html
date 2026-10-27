@@ -1,0 +1,5 @@
+{% extends 'base.html' %}{% block body %}<h2>Vendors</h2>
+<table><tr><th>Vendor</th><th>Invoices</th><th>Quotes</th></tr>
+{% for v in vendors %}<tr><td>{{ v.name }}</td>
+<td><a href="/vendors/{{ v.id }}/invoices">View invoices</a></td>
+<td><a href="/vendors/{{ v.id }}/quotes">View quotes</a></td></tr>{% endfor %}</table>{% endblock %}

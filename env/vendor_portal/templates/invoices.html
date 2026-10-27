@@ -1,0 +1,9 @@
+{% extends 'base.html' %}{% block body %}<h2>Invoices: {{ vendor.name }}</h2>
+<p>Page {{ page }} of {{ pages }}</p>
+<table><tr><th>Invoice</th><th>Date</th><th>Invoice total</th><th>Document</th></tr>
+{% for i in invoices %}<tr><td>{{ i.no }}</td><td>{{ i.date }}</td><td>{{ '{:,.2f}'.format(i.total) }}</td>
+<td><a href="/invoices/{{ i.id }}.pdf">Download PDF {{ i.no }}</a></td></tr>{% endfor %}</table>
+<p class="pager">
+{% if page > 1 %}<a href="/vendors/{{ vendor.id }}/invoices?page={{ page - 1 }}">Previous page</a>{% endif %}
+{% if page < pages %}<a href="/vendors/{{ vendor.id }}/invoices?page={{ page + 1 }}">Next page</a>{% endif %}</p>
+<p><a href="/vendors">Back to vendors</a></p>{% endblock %}

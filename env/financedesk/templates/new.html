@@ -1,0 +1,9 @@
+{% extends 'base.html' %}{% block title %}New payable{% endblock %}
+{% block body %}<h2>New payable</h2>
+{% if error %}<p class="error">{{ error }}</p>{% endif %}
+<form method="post" action="/new">
+<label for="vendor">Vendor</label><input id="vendor" name="vendor" type="text">
+<label for="invoice_no">Invoice number</label><input id="invoice_no" name="invoice_no" type="text">
+<label for="amount">Amount (decimal, e.g. 4250.00)</label><input id="amount" name="amount" type="text">
+<label for="due_date">Due date (YYYY-MM-DD)</label><input id="due_date" name="due_date" type="text">
+<button type="submit">{{ button_label }}</button></form>{% endblock %}

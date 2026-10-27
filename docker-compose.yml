@@ -1,0 +1,14 @@
+name: autoflow_ai
+
+# MySQL for FinanceDesk. Credentials match .env.example (root / root, database financedesk).
+services:
+  mysql:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: financedesk
+    ports: ['3307:3306']
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', '127.0.0.1', '-proot']
+      interval: 5s
+      retries: 20
