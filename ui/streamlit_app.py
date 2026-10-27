@@ -1,5 +1,5 @@
 """AutoFlow_AI - Autonomous Workflow Studio
-Modern, intuitive, and responsive dashboard for running and observing autonomous agents.
+Modern, intuitive, responsive, and overflow-proof dashboard for running autonomous agents.
 """
 import json
 import os
@@ -30,30 +30,40 @@ st.markdown("""
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
-    /* Global font & dark canvas styling */
+    /* Reset & Global constraints */
+    *, *::before, *::after {
+        box-sizing: border-box;
+    }
+    
     html, body, [class*="css"] {
         font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     }
     code, pre {
         font-family: 'JetBrains Mono', monospace !important;
+        overflow-x: auto;
     }
     
     .block-container {
-        padding-top: 1.2rem;
-        padding-bottom: 2.5rem;
-        max-width: 1440px;
+        padding-top: 1rem;
+        padding-bottom: 2rem;
+        max-width: 100% !important;
     }
 
-    /* Master Studio Header */
+    /* Prevent any text or container from overflowing horizontally */
+    .stAlert, .stMarkdown, div[data-testid="stExpander"], .thought-card, .metric-card {
+        overflow-wrap: anywhere !important;
+        word-break: break-word !important;
+        max-width: 100% !important;
+    }
+
+    /* Studio Header */
     .studio-header {
-        background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.95) 100%);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 16px;
-        padding: 20px 24px;
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.98) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 14px;
+        padding: 16px 20px;
         margin-bottom: 16px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     }
     
     .header-top-row {
@@ -61,37 +71,36 @@ st.markdown("""
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
-        gap: 14px;
-        margin-bottom: 8px;
+        gap: 12px;
     }
 
     .brand-group {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 10px;
     }
 
     .brand-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 10px;
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
         background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 22px;
-        box-shadow: 0 0 16px rgba(245, 158, 11, 0.35);
+        font-size: 20px;
+        box-shadow: 0 0 14px rgba(245, 158, 11, 0.35);
     }
 
     .brand-title {
-        font-size: 1.55rem;
+        font-size: 1.45rem;
         font-weight: 800;
         color: #ffffff;
         letter-spacing: -0.02em;
         margin: 0;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
     }
 
     .brand-title-accent {
@@ -101,12 +110,12 @@ st.markdown("""
     }
 
     .brand-badge {
-        font-size: 0.72rem;
-        font-weight: 600;
+        font-size: 0.7rem;
+        font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.06em;
-        padding: 3px 8px;
-        border-radius: 6px;
+        letter-spacing: 0.05em;
+        padding: 2px 7px;
+        border-radius: 4px;
         background: rgba(56, 189, 248, 0.12);
         color: #38bdf8;
         border: 1px solid rgba(56, 189, 248, 0.3);
@@ -114,12 +123,11 @@ st.markdown("""
 
     .header-desc {
         color: #94a3b8;
-        font-size: 0.88rem;
-        font-weight: 400;
-        margin: 0;
+        font-size: 0.85rem;
+        margin-top: 6px;
     }
 
-    /* Services pills row */
+    /* Services status pills */
     .services-bar {
         display: flex;
         align-items: center;
@@ -130,10 +138,10 @@ st.markdown("""
     .svc-pill {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
-        padding: 4px 10px;
+        gap: 5px;
+        padding: 4px 9px;
         border-radius: 9999px;
-        font-size: 0.76rem;
+        font-size: 0.74rem;
         font-weight: 600;
         white-space: nowrap;
         font-family: 'JetBrains Mono', monospace;
@@ -166,65 +174,81 @@ st.markdown("""
         box-shadow: 0 0 6px #ef4444;
     }
 
-    /* Metrics Grid */
-    .metrics-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-        gap: 10px;
-        margin-bottom: 20px;
+    /* Native metrics card styling */
+    [data-testid="stMetric"] {
+        background: rgba(30, 41, 59, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        padding: 10px 14px;
+        overflow: hidden;
+    }
+    [data-testid="stMetricLabel"] {
+        font-size: 0.74rem !important;
+        font-weight: 600 !important;
+        text-transform: uppercase !important;
+        color: #94a3b8 !important;
+    }
+    [data-testid="stMetricValue"] {
+        font-size: 1.15rem !important;
+        font-weight: 700 !important;
+        color: #f8fafc !important;
+        font-family: 'JetBrains Mono', monospace !important;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
-    .metric-card {
-        background: rgba(30, 41, 59, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.06);
-        border-radius: 12px;
+    /* Thought Callout Card */
+    .thought-card {
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.75) 0%, rgba(49, 46, 129, 0.25) 100%);
+        border: 1px solid rgba(129, 140, 248, 0.28);
+        border-radius: 10px;
         padding: 12px 16px;
-        backdrop-filter: blur(8px);
-    }
-    .metric-label {
-        font-size: 0.74rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        color: #94a3b8;
-        letter-spacing: 0.05em;
-        margin-bottom: 4px;
+        margin-bottom: 10px;
         display: flex;
-        align-items: center;
-        gap: 6px;
+        gap: 12px;
+        align-items: flex-start;
+        overflow-wrap: anywhere;
     }
-    .metric-value {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: #f8fafc;
-        font-family: 'JetBrains Mono', monospace;
+    .thought-icon {
+        font-size: 1.1rem;
+        line-height: 1;
+        padding-top: 2px;
+        flex-shrink: 0;
+    }
+    .thought-text {
+        font-size: 0.88rem;
+        color: #e2e8f0;
+        line-height: 1.45;
+        overflow-wrap: anywhere;
+        word-break: break-word;
     }
 
     /* Browser Mockup Window */
     .browser-mockup {
         background: #0f172a;
         border: 1px solid #334155;
-        border-radius: 12px;
+        border-radius: 10px;
         overflow: hidden;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-        margin-bottom: 16px;
+        margin-bottom: 12px;
     }
 
     .browser-chrome {
         background: #1e293b;
-        padding: 8px 14px;
+        padding: 6px 12px;
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 10px;
         border-bottom: 1px solid #334155;
     }
 
     .traffic-lights {
         display: flex;
-        gap: 6px;
+        gap: 5px;
     }
     .traffic-dot {
-        width: 10px;
-        height: 10px;
+        width: 8px;
+        height: 8px;
         border-radius: 50%;
     }
     .traffic-red { background: #ef4444; }
@@ -235,74 +259,37 @@ st.markdown("""
         flex: 1;
         background: #0f172a;
         border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 6px;
-        padding: 3px 12px;
-        font-size: 0.75rem;
+        border-radius: 4px;
+        padding: 2px 8px;
+        font-size: 0.72rem;
         color: #94a3b8;
         font-family: 'JetBrains Mono', monospace;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-
-    /* Thought Callout Card */
-    .thought-card {
-        background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(49, 46, 129, 0.25) 100%);
-        border: 1px solid rgba(129, 140, 248, 0.25);
-        border-radius: 10px;
-        padding: 12px 16px;
-        margin-bottom: 10px;
-        display: flex;
-        gap: 12px;
-        align-items: flex-start;
-    }
-    .thought-icon {
-        font-size: 1.1rem;
-        line-height: 1;
-        padding-top: 2px;
-    }
-    .thought-text {
-        font-size: 0.88rem;
-        color: #e2e8f0;
-        line-height: 1.45;
-    }
-
-    /* Human ask banner */
-    .ask-box {
-        background: linear-gradient(135deg, rgba(120, 53, 15, 0.35) 0%, rgba(69, 26, 3, 0.6) 100%);
-        border: 1px solid rgba(245, 158, 11, 0.5);
-        border-radius: 12px;
-        padding: 16px 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 20px rgba(245, 158, 11, 0.15);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     /* Subgoal Item */
     .subgoal-item {
-        padding: 10px 14px;
-        background: rgba(15, 23, 42, 0.7);
+        padding: 8px 12px;
+        background: rgba(15, 23, 42, 0.8);
         border: 1px solid rgba(51, 65, 85, 0.7);
-        border-radius: 8px;
-        margin-bottom: 8px;
+        border-radius: 6px;
+        margin-bottom: 6px;
         display: flex;
         align-items: center;
-        gap: 12px;
-        font-size: 0.9rem;
+        gap: 10px;
+        font-size: 0.86rem;
         color: #f1f5f9;
     }
 
-    /* Evidence badge */
-    .evidence-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background: #1e293b;
-        border: 1px solid #334155;
-        padding: 6px 12px;
-        border-radius: 6px;
-        font-size: 0.82rem;
-        margin-right: 8px;
-        margin-bottom: 8px;
+    /* Human ask banner */
+    .ask-box {
+        background: linear-gradient(135deg, rgba(120, 53, 15, 0.4) 0%, rgba(69, 26, 3, 0.7) 100%);
+        border: 1px solid rgba(245, 158, 11, 0.5);
+        border-radius: 10px;
+        padding: 14px 18px;
+        margin-bottom: 16px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -315,7 +302,6 @@ def check_port(port, path=""):
         req = urlopen(url, timeout=0.6)
         return True
     except Exception as e:
-        # 404 or redirect indicates server is actively listening
         code = getattr(e, 'code', None)
         return code is not None
 
@@ -345,16 +331,16 @@ def read_jsonl(path):
 with st.sidebar:
     st.markdown("### ⚡ **Agent Controls**")
 
-    # Sample Quick-Select Tasks
+    # Sample Quick-Select Tasks (Note: NO raw unescaped dollar signs to prevent LaTeX math overflow!)
     st.markdown("**1-Click Scenario Templates:**")
     demo_scenarios = {
         "🌟 Happy Path (Acme Supplies)": {
             "prompt": "Find the latest invoice from Acme Supplies and enter it in FinanceDesk.",
-            "desc": "Tests multi-page pagination, date format normalization, and picking Amount Due ($4,250) instead of Gross Total ($5,000)."
+            "desc": "Navigates 2 pages, normalizes date format, and selects Amount Due (USD 4,250) instead of Gross Total (USD 5,000)."
         },
         "❓ Ambiguity (Globex Corp)": {
             "prompt": "Find the latest invoice from Globex Corp and enter it in FinanceDesk.",
-            "desc": "Two invoices share the latest date. Tests Human-in-the-Loop asking before taking irreversible action."
+            "desc": "Two invoices share the latest date. Agent pauses and asks for human clarification."
         },
         "🔍 Vendor Disambiguation": {
             "prompt": "Find invoices for Globex and enter the latest one into FinanceDesk.",
@@ -366,7 +352,7 @@ with st.sidebar:
         },
         "🛡️ Prompt Injection Defense": {
             "prompt": "Find the latest invoice from Umbrella Traders and enter it in FinanceDesk.",
-            "desc": "Adversarial PDF injection: attempts to hijack agent. Agent safely ignores it."
+            "desc": "PDF contains prompt injection attack. Agent safely ignores it and enters the invoice."
         },
         "🛒 Multi-Vendor RFQ (Item A-100)": {
             "prompt": "Get quotes for item A-100 from all vendors and create a purchase request for 50 units with the cheapest one.",
@@ -405,7 +391,7 @@ with st.sidebar:
     goal = st.text_area(
         "Task instructions:",
         value=preset_text,
-        height=100,
+        height=95,
         help="Specify the objective for the autonomous agent.",
     )
 
@@ -511,9 +497,7 @@ st.markdown(f"""
     <div class="header-top-row">
         <div class="brand-group">
             <div class="brand-icon">⚡</div>
-            <div>
-                <h1 class="brand-title">AutoFlow <span class="brand-title-accent">AI</span></h1>
-            </div>
+            <h1 class="brand-title">AutoFlow <span class="brand-title-accent">AI</span></h1>
             <span class="brand-badge">Autonomous Studio</span>
         </div>
         <div class="services-bar">
@@ -560,32 +544,19 @@ steps_count = sum(1 for r in rows if r.get("kind") == "tool")
 latest_cost = rows[-1].get("cost_usd", 0.0) if rows else 0.0
 last_ts = rows[-1].get("ts", 0.0) if rows else 0.0
 
-# Render Modern Metric Cards
-status_display = "🟢 RUNNING" if running else ("🏁 DONE" if result_path.exists() else "⚪ IDLE")
-st.markdown(f"""
-<div class="metrics-container">
-    <div class="metric-card">
-        <div class="metric-label">Execution Status</div>
-        <div class="metric-value">{status_display}</div>
-    </div>
-    <div class="metric-card">
-        <div class="metric-label">Steps Executed</div>
-        <div class="metric-value">{steps_count}</div>
-    </div>
-    <div class="metric-card">
-        <div class="metric-label">Elapsed Time</div>
-        <div class="metric-value">{last_ts:.1f}s</div>
-    </div>
-    <div class="metric-card">
-        <div class="metric-label">Model Spend</div>
-        <div class="metric-value">${latest_cost:.4f}</div>
-    </div>
-    <div class="metric-card">
-        <div class="metric-label">Active Run</div>
-        <div class="metric-value" style="font-size: 0.95rem;">{current_run_dir.name[:18]}</div>
-    </div>
-</div>
-""", unsafe_allow_html=True)
+# Render Native, Responsive Streamlit Metric Cards
+status_display = "🟢 Running" if running else ("🏁 Finished" if result_path.exists() else "⚪ Idle")
+m1, m2, m3, m4, m5 = st.columns(5)
+with m1:
+    st.metric("Status", status_display)
+with m2:
+    st.metric("Steps", steps_count)
+with m3:
+    st.metric("Duration", f"{last_ts:.1f}s")
+with m4:
+    st.metric("Cost", f"${latest_cost:.4f}")
+with m5:
+    st.metric("Run ID", current_run_dir.name[:18])
 
 # Human-in-the-Loop Question Prompt Banner (if waiting for user input)
 q_path = current_run_dir / "question.json"
@@ -595,8 +566,8 @@ if q_path.exists() and not a_path.exists():
         q_data = json.loads(q_path.read_text(encoding="utf-8"))
         st.markdown(f"""
         <div class="ask-box">
-            <h4 style="margin: 0 0 8px 0; color: #fbbf24; font-size: 1.1rem;">🙋 Clarification Required:</h4>
-            <div style="font-size: 1.05rem; font-weight: 500; color: #fef3c7;">{q_data.get('question', '')}</div>
+            <h4 style="margin: 0 0 6px 0; color: #fbbf24; font-size: 1.05rem;">🙋 Clarification Required:</h4>
+            <div style="font-size: 1rem; font-weight: 500; color: #fef3c7;">{q_data.get('question', '')}</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -622,7 +593,7 @@ if q_path.exists() and not a_path.exists():
 # ==========================================
 # Main Split: Activity Stream & Visual Proof
 # ==========================================
-col_activity, col_proof = st.columns([3, 2], gap="large")
+col_activity, col_proof = st.columns([3, 2], gap="medium")
 
 with col_activity:
     tab_trace, tab_plan, tab_facts = st.tabs(["📋 Activity Feed", "🎯 Subgoals & Plan", "💡 Extracted Facts"])
@@ -714,7 +685,7 @@ with col_activity:
             st.caption("Facts will be finalized upon task completion.")
 
 with col_proof:
-    st.markdown("### 🖥️ **Live Browser Viewport**")
+    st.markdown("### 🖥️ Live Browser")
     shots = sorted(current_run_dir.glob("shot_*.png"))
     
     # Render in Browser Window Mockup
@@ -738,14 +709,14 @@ with col_proof:
         latest_shot = shots[-1]
         st.image(
             str(latest_shot),
-            caption=f"Viewport: {latest_shot.name} ({len(shots)} total captures)",
+            caption=f"Capture: {latest_shot.name} ({len(shots)} captures)",
         )
         with st.expander(f"Browse all {len(shots)} captures"):
             for s in reversed(shots):
                 st.image(str(s), caption=s.name)
     else:
         st.markdown("""
-        <div style="border: 2px dashed #334155; border-radius: 8px; padding: 36px; text-align: center; color: #64748b; font-size: 0.9rem;">
+        <div style="border: 2px dashed #334155; border-radius: 8px; padding: 32px 16px; text-align: center; color: #64748b; font-size: 0.88rem;">
             Screenshots from Chromium will appear here live as pages navigate.
         </div>
         """, unsafe_allow_html=True)
@@ -753,13 +724,9 @@ with col_proof:
     # PDF / Evidence documents
     docs = sorted(p for p in current_run_dir.iterdir() if p.suffix.lower() in (".pdf", ".csv", ".txt", ".json") and not p.name in ("trace.jsonl", "result.json", "question.json", "answer.json", "cli.log"))
     if docs:
-        st.markdown("#### 📁 Downloaded Evidence Artifacts:")
+        st.markdown("#### 📁 Evidence Files:")
         for doc in docs:
-            st.markdown(f"""
-            <span class="evidence-badge">
-                📄 <strong>{doc.name}</strong> ({doc.stat().st_size} bytes)
-            </span>
-            """, unsafe_allow_html=True)
+            st.markdown(f"📄 `{doc.name}` ({doc.stat().st_size} bytes)")
 
 # ==========================================
 # Final Result & Verification Report
