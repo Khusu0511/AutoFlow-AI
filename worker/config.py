@@ -14,7 +14,7 @@ def _load_dotenv():
         if not line or line.startswith('#') or '=' not in line:
             continue
         k, _, v = line.partition('=')
-        os.environ.setdefault(k.strip(), v.strip())
+        os.environ.setdefault(k.strip(), v.strip().strip("'\""))
 
 
 _load_dotenv()
